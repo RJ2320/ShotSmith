@@ -81,15 +81,41 @@ except ImportError:
         logging.critical("DaVinciResolveScript.py not found in any standard path")
     import DaVinciResolveScript as dvr
 
-# ── GUI ───────────────────────────────────────────────────────────────────────
+# ── GUI (auto-install PySide6 on first run if missing) ──────────────────────
+def _bootstrap_pyside6():
+    """Install PySide6 into the current Python if missing.
+    Inside Resolve this targets Resolve's embedded Python — no manual pip needed."""
+    import subprocess
+    try:
+        subprocess.check_call(
+            [sys.executable, "-m", "pip", "install", "--user", "PySide6"]
+        )
+        return True
+    except Exception as e:
+        logging.critical("PySide6 auto-install failed: %s", e)
+        return False
+
 try:
     from PySide6 import QtWidgets, QtCore, QtGui
     from PySide6.QtCore import Qt, QSortFilterProxyModel
     from PySide6.QtGui import QShortcut, QKeySequence, QColor, QFont
-except ImportError as e:
-    logging.critical("PySide6 import failed: %s", e)
-    print("PySide6 not installed.  Run: pip install PySide6")
-    sys.exit(1)
+except ImportError:
+    logging.info("PySide6 missing — attempting auto-install")
+    print("Shotsmith: installing PySide6 (one-time, ~30 seconds)…")
+    if _bootstrap_pyside6():
+        try:
+            from PySide6 import QtWidgets, QtCore, QtGui
+            from PySide6.QtCore import Qt, QSortFilterProxyModel
+            from PySide6.QtGui import QShortcut, QKeySequence, QColor, QFont
+        except ImportError as e:
+            logging.critical("PySide6 still missing after install: %s", e)
+            print("Shotsmith: PySide6 install succeeded but import failed.")
+            print("Run manually:  pip install PySide6")
+            sys.exit(1)
+    else:
+        print("Shotsmith: could not auto-install PySide6.")
+        print("Run manually:  pip install PySide6")
+        sys.exit(1)
 
 # ── Resolve connection ────────────────────────────────────────────────────────
 resolve = dvr.scriptapp("Resolve")

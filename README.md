@@ -23,17 +23,25 @@ Built for VFX and editorial workflows where you need to assign shot IDs, conform
 
 ---
 
-## Install
+## Install (easy)
 
-1. Install [PySide6](https://pypi.org/project/PySide6/):
-   ```
-   pip install -r requirements.txt
-   ```
-2. Copy `Shotsmith.py` to Resolve's scripts folder:
-   - **Windows:** `C:\ProgramData\Blackmagic Design\DaVinci Resolve\Fusion\Scripts\Utility\`
-   - **macOS:** `/Library/Application Support/Blackmagic Design/DaVinci Resolve/Fusion/Scripts/Utility/`
-   - **Linux:** `/opt/resolve/Fusion/Scripts/Utility/`
+1. Download the latest release zip from the [**Releases page**](../../releases) and extract it.
+2. Run the installer:
+   - **Windows:** double-click `install.bat`
+   - **macOS / Linux:** open a terminal in the extracted folder and run `bash install.sh`
 3. In Resolve: **Preferences → System → General → External scripting using = Local**, then restart Resolve.
+
+PySide6 installs automatically the first time you run the script — no manual `pip` needed.
+
+## Install (manual)
+
+If you prefer to install by hand, copy `Shotsmith.py` to:
+
+- **Windows:** `C:\ProgramData\Blackmagic Design\DaVinci Resolve\Fusion\Scripts\Utility\`
+- **macOS:** `/Library/Application Support/Blackmagic Design/DaVinci Resolve/Fusion/Scripts/Utility/`
+- **Linux:** `/opt/resolve/Fusion/Scripts/Utility/`
+
+Then enable external scripting (step 3 above).
 
 ## Run
 

@@ -1,0 +1,41 @@
+name: Release
+
+on:
+  push:
+    tags:
+      - 'v*'      # e.g. v0.1.0, v1.2.3
+
+permissions:
+  contents: write   # needed to create a Release
+
+jobs:
+  release:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Check out repo
+        uses: actions/checkout@v4
+
+      - name: Build release zip
+        run: |
+          VERSION="${GITHUB_REF_NAME}"
+          STAGE="shotsmith-${VERSION}"
+          mkdir "$STAGE"
+          cp Shotsmith.py README.md LICENSE requirements.txt install.bat install.sh "$STAGE/"
+          zip -r "shotsmith-${VERSION}.zip" "$STAGE"
+
+      - name: Create GitHub Release
+        uses: softprops/action-gh-release@v2
+        with:
+          files: shotsmith-*.zip
+          generate_release_notes: true
+          body: |
+            ## Install
+
+            1. Download `shotsmith-${{ github.ref_name }}.zip` below and extract it.
+            2. Run the installer:
+               - **Windows:** double-click `install.bat`
+               - **macOS / Linux:** `bash install.sh`
+            3. In Resolve: **Preferences → System → General → External scripting using = Local**, then restart Resolve.
+            4. **Workspace → Scripts → Utility → Shotsmith**
+
+            PySide6 installs automatically on first launch.
